@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.RoleMapper">
+	<!-- 多对多关系映射，使用1对多和多对1嵌套实现，注意映射关系的三张表的主键名称要不相同（rid,pid,rpid），否则只能查到1条记录 -->
+	<resultMap type="com.pojo.Role" id="roleMap">
+        <id column="id" property="roleid" ></id>
+        <result column="name" property="name"/>
+        <collection property="mapping_RP" column="id" ofType="com.pojo.Mapping_RP">  
+            <association column="permissionid" property="permission" javaType="com.pojo.Permission">
+	        	<id column="id" property="permissionid"></id>
+	        	<result column="pname" property="name"/>
+        	</association>
+        </collection>
+    </resultMap>
+	
+	<select id="getRoles" resultMap="roleMap">
+		select * from role left join mapping_rp on role.id=mapping_rp.roleid left join permission 
+    	on mapping_rp.permissionid=permission.id
+	</select>
+
+    <insert id="addRole" useGeneratedKeys="true" keyProperty="roleid" parameterType="com.pojo.Role">
+    	insert into role (name) values(#{name}) 
+    </insert>
+    
+    <insert id="addRolePermission" useGeneratedKeys="true"  parameterType="com.pojo.Mapping_RP">
+    	insert into mapping_rp(roleid,permissionid)
+    	values (#{0},#{1})
+    </insert>
+    
+    <delete id="deleterole" parameterType="com.pojo.Role">
+    	delete from role where id=#{roleid}
+    </delete>
+    
+    <delete id="deleterole_permission" parameterType="int">
+    	delete from mapping_rp where roleid=#{0} and permissionid={1}
+    </delete> 
+    
+    <delete id="deleteroles" parameterType="int">
+    	delete from mapping_rp where roleid=#{0}
+    </delete>
+    
+    <select id="getRolebyid" parameterType="int" resultMap="roleMap">
+    	select * from role left join mapping_rp on role.id=mapping_rp.roleid left join permission 
+    	on mapping_rp.permissionid=permission.id where role.id=#{roleid}
+    </select>
+    
+    <update id="updateRole" parameterType="com.pojo.Role">
+    	update role set name=#{name} where id=#{roleid}
+    </update>
+</mapper>

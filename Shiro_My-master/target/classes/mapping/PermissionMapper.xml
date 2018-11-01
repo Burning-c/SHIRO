@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.PermissionMapper">
+
+	<resultMap type="com.pojo.Permission" id="permissionMap">
+		<id column="id" property="permissionid" />
+		<result column="pname" property="name" />
+	</resultMap>
+
+	<select id="getPermissions" resultMap="permissionMap">
+		select * from permission
+	</select>
+
+	<insert id="addpermission">
+		insert into permission (pname)
+		values(#{name})
+	</insert>
+
+	<delete id="deletepermission">
+		delete from permission where id=#{permissionid}
+	</delete>
+
+	<select id="getPermissionByid" parameterType="int">
+		select * from
+		permission where id=#{permissionid}
+	</select>
+
+	<update id="updatePermission" parameterType="com.pojo.Permission" >
+		update permission set pname=#{name} where id=#{permissionid}
+	</update>
+
+	<delete id="deletePermissionsByid" parameterType="int">
+		delete from
+		mapping_rp where permissionid=#{permissionid}
+	</delete>
+</mapper>

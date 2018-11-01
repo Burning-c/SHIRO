@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--客户映射 指定到dao接口 -->
+<mapper namespace="org.com.dao.UserMapper">
+    <resultMap type="org.com.bean.User" id="userMap">
+        <result column="uid" property="uid"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="salt" property="salt"/>
+        <result column="state" property="state"/>
+    </resultMap>
+    <!-- ==================定义sql片段==============
+    sql:是sql片段标签属性id是该片段的唯一标识 -->
+    <sql id="userSql">
+        uid,username,password,name,salt,state
+    </sql>
+    <!--id与dao接口的方法名一直，指定结果类型，和参数类型 -->
+    <select id="findUserById" resultType="org.com.bean.User" parameterType="java.lang.Integer">
+       select <include refid="userSql"/> from user_info where uid = #{id}
+    </select>
+    <select id="findUserByUserName" resultType="org.com.bean.User" parameterType="java.lang.String">
+        select <include refid="userSql"/> from user_info where username = #{username}
+    </select>
+</mapper>

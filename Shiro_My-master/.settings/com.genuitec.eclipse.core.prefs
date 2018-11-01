@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+validator.Checked=src/main/webapp/index.jsp,src/main/webapp/js/jquery-3.1.1.js
+validator.Revalidate=true
+validator.Unchecked=

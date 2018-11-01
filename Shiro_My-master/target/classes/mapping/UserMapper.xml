@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.UserMapper">
+	<!-- 多对多关系映射，使用1对多和多对1嵌套实现，注意映射关系的三张表的主键名称要不相同（uid,rid,urid），否则只能查到1条记录 -->
+	<resultMap type="com.pojo.User" id="userMap">
+		<id column="id" property="userid"></id>
+		<result column="username" property="username" />
+		<result column="password" property="password" />
+		<collection property="mapping_UR" column="id"
+			ofType="com.pojo.Mapping_UR">
+			<association column="roleid" property="role" javaType="com.pojo.Role">
+				<id column="id" property="roleid"></id>
+				<result column="name" property="name" />
+			</association>
+		</collection>
+	</resultMap>
+
+	<select id="getusers" resultMap="userMap">
+		select * from user left join
+		mapping_ur on user.id=mapping_ur.userid left
+		join role on
+		mapping_ur.roleid=role.id
+	</select>
+
+	<select id="getUserByid" resultMap="userMap">
+		select * from user left join
+		mapping_ur on user.id=mapping_ur.userid left
+		join role on
+		mapping_ur.roleid=role.id
+		where user.id=#{userid}
+	</select>
+
+	<select id="getUserByusername" resultMap="userMap">
+		select * from user left
+		join mapping_ur on user.id=mapping_ur.userid left
+		join role on
+		mapping_ur.roleid=role.id
+		where username=#{username}
+	</select>
+
+	<delete id="deleteuser" parameterType="int">
+		delete from user where
+		user.id=#{userid}
+	</delete>
+
+	<delete id="deleteuserrole" parameterType="int">
+		delete from mapping_ur
+		where userid=#{0} and roleid=#{1}
+	</delete>
+
+	<insert id="adduserrole" parameterType="int">
+		insert into mapping_ur
+		(userid,roleid)
+		values (#{0},#{1})
+	</insert>
+
+	<insert id="adduser" useGeneratedKeys="true" keyProperty="userid"
+		parameterType="com.pojo.User">
+		insert into user (username,password)
+		values
+		(#{username},#{password})
+	</insert>
+
+	<update id="updateuser" parameterType="com.pojo.User">
+		update user set
+		username=#{username}
+		where user.id=#{userid}
+	</update>
+
+	<delete id="deleteuseroles" parameterType="int">
+		delete from mapping_ur
+		where userid=#{userid}
+	</delete>
+</mapper>
